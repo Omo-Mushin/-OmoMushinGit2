@@ -1,0 +1,26 @@
+table, th, td {
+    border: 1px solid black;
+  }
+  th {
+    text-align: left;
+  }
+  th, td {
+    padding-top: 10px;
+    padding-bottom: 20px;
+    padding-left: 30px;
+    padding-right: 40px;
+  }
+  tr:nth-child(even) {
+    background-color: #D6EEEE;
+  }
+
+body {
+  margin-top: 2rem;
+}
+
+.row {
+  display: flex;
+  justify-content: space-between;
+}
+
+

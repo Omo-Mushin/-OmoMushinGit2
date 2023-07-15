@@ -1,0 +1,62 @@
+.header_search {
+    padding: 10px;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    height: 22px;
+    color: gray;
+    background-color:#eef3f8 ;
+}
+
+.header {
+    position: sticky;
+    display: flex;
+    justify-content: space-between;
+    border-bottom: 0.1px solid lightgray;
+    padding-top: 10px;
+    padding-bottom: 10px;
+    top: 0;
+    z-index: 1000;
+    background: var(--clr-grey-10);
+    }
+
+    .myreact-icons { color: red;
+        height: 80px;
+      }
+
+.Name {
+    position: left;
+    left: 1;
+    padding-left: 2rem;
+}
+
+.header-left-user-icon {
+    margin-right: 4rem;
+    width: 70px;
+    display: flex;
+    justify-content: space-between;
+}
+.header-right-search-icon{
+    padding: 10px;
+    margin-right: 4rem;
+    display: flex;
+    align-items: center;
+    border-radius: 5px;
+    height: 40px;
+    color: gray;
+    background-color:#9baec1 
+}
+.title {
+    text-align: center;
+    margin-top: 2rem;
+}
+
+.header-right-search-icon > input {
+    outline: none;
+    border: none;
+    background: none;
+}
+
+.header-left{
+    display:flex
+}
