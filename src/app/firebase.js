@@ -1,6 +1,6 @@
 import firebase from 'firebase/compat/app';
 import 'firebase/compat/database';
-
+import { getAuth } from 'firebase/auth'
 const firebaseConfig = {
     apiKey: "AIzaSyB9kUsqWUNBXN2OrDff-b7QEzoRKBVu4Qw",
     authDomain: "daddygo-cfb28.firebaseapp.com",
@@ -11,6 +11,6 @@ const firebaseConfig = {
     measurementId: "G-Y646GCLZLB"
   };
 
-firebase.initializeApp(firebaseConfig);
-export const dataRef = firebase.database();
+const app = firebase.initializeApp(firebaseConfig);
+export const dataBase = getAuth(app);
 export default firebase;

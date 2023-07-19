@@ -2,12 +2,17 @@ import { object } from 'prop-types';
 import React, { Component } from 'react';
 import Joi from 'joi-browser';
 import reviews, { getReviews } from '../app/data'
+import Axios from 'axios';
+import bcrypt from 'bcryptjs';
+
+const apiEndPoint = 'https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json'
 
 export default class Register extends Component{
     state = {   data: this.props.posts,
                 account: { name: '', 
                 password: '', job: '', 
                 text : '', id: '',
+                img: ''
                  },
                 errors: {}
     }
@@ -18,7 +23,7 @@ export default class Register extends Component{
         password: Joi.string().required().min(5).label('Password'),
         text: Joi.string().required().min(5).label('Text'),
         job: Joi.string().required().min(5).max(15).label('Job'),
-
+        img: Joi.required().label('Image')
     }
     validate = () => {
         const result = Joi.validate( this.state.account, this.schema,  {abortEarly: false})
@@ -40,24 +45,64 @@ export default class Register extends Component{
         const errors = this.validate()
         this.setState({errors : errors || {}})
         if (errors) return 
-        
-        let account = {...this.state.account};
-        account[e.currentTarget.name] = e.currentTarget.value;
-        //const account = {...this.state.data, [e.currentTarget.name] : e.currentTarget.value }
-        // console.log( this.state.data)
-        this.setState({account})
-        const account1 = [this.state.account, ...this.state.data]
-        // console.log(account1)
-        // console.log(account)
+      
+        const account = {...this.state.account};
+        const hashedpassword = bcrypt.hashSync(account.password, 10)
+        // console.log(hashedpassword)
+        account.password = hashedpassword;
+        console.log(account.img)
 
-        for (var [key, value] of Object.entries(account)) {
-                        console.log( key );
-                        console.log(value)
-                        // this.handlePost( 'https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json', account)
-                    }   
-                     this.props.onPosts( 'https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json', 
-                     account )
-                }
+        this.setState({ account })
+        
+        
+            
+        const post = await Axios.post(apiEndPoint, {
+            name: this.state.account.name,
+            password: this.state.account.password,
+            job: this.state.account.job,
+            text: this.state.account.text,
+            id: this.state.account.id,
+            img: this.state.account.img
+            }
+            )
+        const newPost = post.data
+        const posts = [newPost, ... this.state.data]
+        this.setState({ posts })
+    
+        console.log(newPost)
+    }
+
+    handleGet = async (e) => {
+        const response = await Axios.get(apiEndPoint);
+        this.formatPostdata(response.data);
+    }
+
+    formatPostdata = (posts) => {
+        const postData = [];
+        console.log(posts)
+        for (let key in posts) {
+            postData.push({ ...posts[key], id: key})
+        }
+        console.log(postData)
+    } 
+        // let account = {...this.state.account};
+        // account[e.currentTarget.name] = e.currentTarget.value;
+        // //const account = {...this.state.data, [e.currentTarget.name] : e.currentTarget.value }
+        // // console.log( this.state.data)
+        // this.setState({account})
+        // console.log(account)
+        // const account1 = [this.state.account, ...this.state.data]
+        // // console.log(account1)
+        // // console.log(account)
+
+        // for (var [key, value] of Object.entries(account)) {
+        //                 console.log( key );
+        //                 console.log(value)
+        //                 // this.handlePost( 'https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json', account)
+        //             }   
+        //              this.props.onPosts( 'https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json', 
+        //              account )
+                
     handleChange = e => {
         const errors = {...this.state.errors};
         const errorMessage = this.validateProperty(e.currentTarget)
@@ -67,6 +112,12 @@ export default class Register extends Component{
         const account = {...this.state.account};
         account[e.currentTarget.name] = e.currentTarget.value;
         this.setState({ account : account, errors : errors})
+    }
+    handleImage = (e) => {
+        const account = {...this.state.account};
+        account.img = e.target.files[0]; 
+        console.log(account.img)
+        this.setState({ account })
     }
     render() {
         
@@ -140,17 +191,19 @@ export default class Register extends Component{
                         {this.state.errors.text && 
                         <div className='alert alert-danger'>{this.state.errors.text}</div>}
                     </div>
-                    <div className="form-check">
-                        <input type="checkbox" 
-                        className="form-check-input" 
-                        id="exampleCheck1"/>
-                        <label className="form-check-label" 
-                        for="exampleCheck1">Prove you're not a robot</label>
+                    <div class="form-group">
+                            <label for="exampleFormControlFile1">
+                                Upload Image</label>
+                            <input type="file" name='img'
+                            value={this.state.account.img}
+                            onChange={this.handleImage} 
+                            class="form-control-file" />
                     </div>
+
                     <button type="submit" disabled={this.validate()}
                      className="btn btn-primary">Submit</button>
-                     {/* <button type="submit" onClick={this.handleGet}
-                     className="btn btn-primary">Get</button> */}
+                     <button type="submit" onClick={this.handleGet}
+                     className="btn btn-primary">Get</button>
 </form>
                 </div>
 

@@ -1,44 +1,75 @@
 import React, { Component } from 'react';
-import SideBar from '../appParts/sidebar';
+import firebase from 'firebase/compat';
 import SideBarBottom from '../appParts/sideBarBottom';
 import { InfoList } from '../info';
 import { getInfoList } from '../info';
 import 'bootstrap/dist/css/bootstrap.css'
 import Feed from '../appParts/feed';
-import Nav from '../nav1';
+import Nav from '../pages/nav1';
 import { paginate } from '../utilities/paginate1';
 import reviews from '../app/data';
 import { Route, Redirect, Switch } from 'react-router-dom';
-// import Movie from '../linkComponents/Movie';
-import NotFound from '../linkComponents/NotFound';
-import LoginForm from '../linkComponents/Login';
-import Register from '../linkComponents/Register';
+import NotFound from '../pages/NotFound';
+import LoginForm from '../pages/Login';
+import Register from '../pages/Register';
 import homePage from '../appParts/home';
-import sideMenu from '../appParts/sidebar2';
-import Rentals from '../linkComponents/Rentals';
-import NewsPage from '../linkComponents/Rentals';
-import AdminRegistration from '../linkComponents/AdminRegistration';
-import Registration from '../linkComponents/UserRegistration';
+import Axios from 'axios';
+import NewsPage from '../pages/Rentals';
+import AdminRegistration from '../pages/AdminRegistration';
+import Registration from '../pages/UserRegistration';
+import { signOut } from 'firebase/auth';
+import { dataBase } from './firebase';
+import jwtDecode from 'jwt-decode'
+import { Logout } from '@mui/icons-material';
+
+
+const apiEndPoint = 'https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json'
 
 class MainApp extends Component {
     state = { List: InfoList, onList: getInfoList(), status: "student",
-    posts: [], pageSize: 3, currentPage: 1,
-     apiEndPoint : "https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json"  }
-    
-    async componentDidMount() {
+    posts: [], pageSize: 3, currentPage: 1,login: false
+     }
+     
+
+     async componentDidMount () {
+        try {
+            const response = await Axios.get(apiEndPoint);
+        this.formatPostdata(response.data);
+
+        const jwt = localStorage.getItem('token');
+        const user = jwtDecode(jwt)
+        // console.log(user)
+        this.setState({ user })
+        }
+        catch (err) {
+            alert('an unexpected error :  ', err )
+        }
+    }
+
+    formatPostdata = (posts) => {
+        const postData = [];
+        // console.log(posts)
+        for (let key in posts) {
+            postData.push({ ...posts[key], id: key})
+        }
+        // console.log(postData)
+        this.setState({ posts : postData})
+    }
+     
+    // async componentDidMount() {
 
        
-            const response = await fetch('https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json');
-            const fetched = await response.json();
+    //         const response = await fetch('https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json');
+    //         const fetched = await response.json();
             
-            console.log(fetched);
-            // const fetchedposts = this.handleSpread(fetched)
-            // console.log(fetchedposts.value)
-            for (var [key, value] of Object.entries(fetched)) {
-                // console.log( key );
-                //   console.log(value)
-                this.state.posts.push({id:key, ...value})
-            }
+    //         console.log(fetched);
+    //         // const fetchedposts = this.handleSpread(fetched)
+    //         // console.log(fetchedposts.value)
+    //         for (var [key, value] of Object.entries(fetched)) {
+    //             // console.log( key );
+    //             //   console.log(value)
+    //             this.state.posts.push({id:key, ...value})
+    //         }
             // }   
             // for (let [key, value] in fetched) {
             //     this.setState.posts.push(value)
@@ -46,7 +77,7 @@ class MainApp extends Component {
             // }
         //  console.log(this.state.posts.id)
         
-     }
+     
     // componentDidMount() { 
     //     const posts = [...this.state.posts]
         
@@ -61,44 +92,60 @@ class MainApp extends Component {
         this.setState({currentPage : page})
         // console.log(page)
       }
-      handlePost = async (url='', posts = {} ) => {
-            const originalPosts = this.state.posts
-        try {
-            const response = await fetch(url, {
-                method: 'POST', 
-                mode: 'cors', cache: 'no-cache', 
-                credentials: 'same-origin', 
-                headers: {
-                    'Content-Type' : 'application.json'
-                },
-                body: JSON.stringify(posts),
-            })
-            return response.json()
-        } catch (error) {
-            alert("There has been a problem with your request:", error);
-            this.setState({ posts : originalPosts })
-          }
-    }
-    handleDelete = async (post) =>  {
-        const originalPosts = this.state.posts
-        console.log(post.id)
+      handleDelete = async (post) => {
+            try {
+                await Axios.delete(apiEndPoint + '/'+  post.name + '/' + post.id)
+
         const posts = this.state.posts.filter(p => p.id !== post.id)
-        this.setState({posts})
-        try {
-            await fetch('https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json' + '/' + post.id, {
-                method: "DELETE",
-                mode: 'cors', cache: 'no-cache', 
-                credentials: 'same-origin', 
-                headers: {
-                    'Content-Type' : 'application.json'
-                },
-                body: JSON.stringify(posts)
-            })
-            ;
-        } catch (err) {
-            alert('an error occured');
-            this.setState({posts : originalPosts})
-        }
+        this.setState({ posts })
+            } catch (error) {
+                alert('something went wrong' + error)
+            }
+        
+      }
+
+      async handleLogOut() {
+        await signOut(dataBase)
+        this.props.history.push('/')
+      }
+    //   handlePost = async (url='', posts = {} ) => {
+    //         const originalPosts = this.state.posts
+    //     try {
+    //         const response = await fetch(url, {
+    //             method: 'POST', 
+    //             mode: 'cors', cache: 'no-cache', 
+    //             credentials: 'same-origin', 
+    //             headers: {
+    //                 'Content-Type' : 'application.json'
+    //             },
+    //             body: JSON.stringify(posts),
+    //         })
+    //         return response.json()
+    //     } catch (error) {
+    //         alert("There has been a problem with your request:", error);
+    //         this.setState({ posts : originalPosts })
+    //       }
+    // }
+    // handleDelete = async (post) =>  {
+    //     const originalPosts = this.state.posts
+    //     console.log(post.id)
+    //     const posts = this.state.posts.filter(p => p.id !== post.id)
+    //     this.setState({posts})
+    //     try {
+    //         await fetch('https://daddygo-cfb28-default-rtdb.firebaseio.com/daddygo.json' + '/' + post.id, {
+    //             method: "DELETE",
+    //             mode: 'cors', cache: 'no-cache', 
+    //             credentials: 'same-origin', 
+    //             headers: {
+    //                 'Content-Type' : 'application.json'
+    //             },
+    //             body: JSON.stringify(posts)
+    //         })
+    //         ;
+    //     } catch (err) {
+    //         alert('an error occured');
+    //         this.setState({posts : originalPosts})
+    //     }
     
 
         // fetch('https://example.com/delete-item/' + id, {
@@ -106,7 +153,7 @@ class MainApp extends Component {
         //     })
         //     .then(res => res.text()) // or res.json()
         //     .then(res => console.log(res);
-    }
+    
         
 //         fetch('https://example.com/delete-item/' + id, {
 //   method: 'DELETE',
@@ -124,12 +171,13 @@ class MainApp extends Component {
     //     console.log(posts[index].liked)
     //     this.setState({ posts : this.state.posts})
     // }
+
     render() { 
         const persons = paginate(this.state.posts, this.state.currentPage, this.state.pageSize)
         // console.log('posts', this.state.posts)
         return (
         <div className='app'>
-            <Nav />
+            <Nav LogOut = {this.handleLogout} user={this.state.user  } />
                 <div className='app-body'>
                         
                         {/* <SideBar items={this.state.onList} 
@@ -141,7 +189,7 @@ class MainApp extends Component {
                             <Switch>
                                 <Route path='/homePage' component={homePage} />
                                 <Route path='/post/:name/:id/:text/:job' component={NewsPage} />
-                                
+                                <Route path='/logout' component={Logout} />
                                 <Route path='/movies' component={homePage} />
                                 <Route path='/adminReg' component={AdminRegistration} />
                                 <Route path='/reg' component={Registration} />

@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
-import Navigation from './navigation';
-import Vidly from './components/vidly';
+import Navigation from '../Components/navigation';
+import Vidly from '../components/vidly';
 import Movie from './linkComponents/Movie'
  import Rentals from './linkComponents/Rentals';
  import Customers from './linkComponents/Customers';

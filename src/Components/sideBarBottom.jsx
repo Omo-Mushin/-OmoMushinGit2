@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 
-import StripePagination from '../app/paginationForStripe';
+import StripePagination from './paginationForStripe';
 import { NavLink } from 'react-router-dom';
 
 class SideBarBottom extends Component {

@@ -10,8 +10,7 @@ import './index.css';
 import 'bootstrap/dist/css/bootstrap.css'
 // import Counter from './components/counter';
 import 'font-awesome/css/font-awesome.css';
-// import './vidly.css';
-// import './App.css';
+import cors from 'cors';
 import { reduceRight } from 'lodash';
 import MainApp from './app/MainApp';
 // import Apps from './Apps';
@@ -29,7 +28,10 @@ import './landingPage.css'
 
 const container = document.getElementById('root');
 const root = createRoot(container);
+// app.use(cors ({
+//    origin: 'http://localhost:3000',
 
+// }))
 root.render(
   <BrowserRouter>
      <React.StrictMode>
