@@ -170,7 +170,7 @@ Variables
     height: 65%;
     top: 0;
     left: 0;
-    background: url(./hero.svg);
+    /* background: url(./hero.svg); */
     background-size: cover;
     background-repeat: no-repeat;
     z-index: -1;

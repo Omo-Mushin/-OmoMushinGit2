@@ -3,9 +3,9 @@ import { createRoot } from 'react-dom/client';
  import { Provider } from 'react-redux';
 import { store } from './app/store';
 import { BrowserRouter } from 'react-router-dom';
-import './webPage.css'
+import './assets/styles/webPage.css'
 import reportWebVitals from './reportWebVitals';
-import './index.css';
+import './assets/styles/index.css';
 // import Header from './Header'
 import 'bootstrap/dist/css/bootstrap.css'
 // import Counter from './components/counter';
@@ -16,14 +16,13 @@ import MainApp from './app/MainApp';
 // import Apps from './Apps';
 // // //  import Counters from './components/counters';
 // import Nav from './nav1';
-import AppStore from './appParts/sidebar';
-import './nav1.css'
-import './sideBar.css'
-import './MainApp.css'
-import './feed.css'
-import './sideBarBottom.css'
-import './home.css'
-import './landingPage.css'
+
+import './assets/styles/nav1.css'
+import './assets/styles/sideBar.css'
+import './assets/styles/MainApp.css'
+import './assets/styles/feed.css'
+import './assets/styles/sideBarBottom.css'
+import './assets/styles/home.css'
 
 
 const container = document.getElementById('root');

@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import SideBar from '../appParts/sidebar';
+import SideBar from '../Components/sidebar';
 
 
 class Feed extends Component {

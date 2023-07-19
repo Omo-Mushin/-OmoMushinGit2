@@ -1,18 +1,18 @@
 import React, { Component } from 'react';
 import firebase from 'firebase/compat';
-import SideBarBottom from '../appParts/sideBarBottom';
+import SideBarBottom from '../Components/sideBarBottom';
 import { InfoList } from '../info';
 import { getInfoList } from '../info';
 import 'bootstrap/dist/css/bootstrap.css'
-import Feed from '../appParts/feed';
-import Nav from '../pages/nav1';
+import Feed from '../Components/feed'
+import Nav from '../Components/nav1';
 import { paginate } from '../utilities/paginate1';
-import reviews from '../app/data';
+import reviews from './data';
 import { Route, Redirect, Switch } from 'react-router-dom';
 import NotFound from '../pages/NotFound';
 import LoginForm from '../pages/Login';
 import Register from '../pages/Register';
-import homePage from '../appParts/home';
+import homePage from '../Components/home';
 import Axios from 'axios';
 import NewsPage from '../pages/Rentals';
 import AdminRegistration from '../pages/AdminRegistration';
